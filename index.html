@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGHSS - VidaPlus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+
+
+  <style>
+    .sidebar { transition: all 0.3s; }
+    .card-hover:hover { transform: translateY(-5px); transition: all 0.3s; }
+    .form-input { transition: all 0.2s; }
+    .form-input:focus { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans">
+
+
+  <!-- TELA DE LOGIN / REGISTRO -->
+  <div id="auth-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+    <div class="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl w-full max-w-md mx-4">
+      <div class="text-center mb-8">
+        <i class="fas fa-hospital text-7xl text-blue-600 dark:text-blue-500"></i>
+        <h1 class="text-4xl font-bold mt-4">VidaPlus</h1>
+        <p class="text-gray-600 dark:text-gray-400">SGHSS - Sistema de Gestão Hospitalar</p>
+      </div>
+
+
+      <!-- Login -->
+      <div id="login-form">
+        <h2 class="text-2xl font-semibold mb-6 text-center">Entrar no Sistema</h2>
+        <form onsubmit="login(event)" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">E-mail ou CPF</label>
+            <input type="text" id="login-user" placeholder="ana.silva@email.com" 
+                   class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Senha</label>
+            <input type="password" id="login-pass" placeholder="••••••••" 
+                   class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold text-lg transition">
+            Entrar
+          </button>
+        </form>
+        <p class="text-center mt-6 text-sm">
+          Não tem conta? 
+          <button onclick="showRegister()" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Criar conta</button>
+        </p>
+      </div>
+
+
+      <!-- Registro -->
+      <div id="register-form" class="hidden">
+        <h2 class="text-2xl font-semibold mb-6 text-center">Criar Nova Conta</h2>
+        <form onsubmit="register(event)" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Nome Completo</label>
+            <input type="text" id="reg-name" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">CPF</label>
+              <input type="text" id="reg-cpf" maxlength="14" placeholder="000.000.000-00" 
+                     class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Telefone</label>
+              <input type="tel" id="reg-phone" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">E-mail</label>
+            <input type="email" id="reg-email" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-700 rounded-2xl focus:outline-none dark:bg-gray-800" required>
+          </div>
+          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-semibold text-lg transition">
+            Cadastrar
+          </button>
+        </form>
+        <p class="text-center mt-6 text-sm">
+          Já tem conta? 
+          <button onclick="showLogin()" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Fazer Login</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SISTEMA PRINCIPAL -->
+  <div id="main-system" class="hidden flex h-screen">
+
+
+    <!-- Sidebar -->
+    <div class="w-72 bg-blue-900 dark:bg-gray-900 text-white sidebar flex flex-col">
+      <div class="p-6 border-b border-blue-800 dark:border-gray-700">
+        <h1 class="text-3xl font-bold flex items-center gap-3">
+          <i class="fas fa-hospital"></i> VidaPlus
+        </h1>
+        <p class="text-blue-300 dark:text-gray-400 text-sm mt-1">SGHSS</p>
+      </div>
+
+
+      <nav class="flex-1 mt-6 px-3 space-y-1">
+        <a href="#" onclick="showSection('dashboard')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl active">
+          <i class="fas fa-home w-5"></i> Dashboard
+        </a>
+        <a href="#" onclick="showSection('pacientes')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl">
+          <i class="fas fa-user-injured w-5"></i> Pacientes
+        </a>
+        <a href="#" onclick="showSection('agendamentos')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl">
+          <i class="fas fa-calendar-alt w-5"></i> Agendamentos
+        </a>
+        <a href="#" onclick="showSection('prontuarios')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl">
+          <i class="fas fa-file-medical w-5"></i> Prontuários
+        </a>
+        <a href="#" onclick="showSection('telemedicina')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl">
+          <i class="fas fa-video w-5"></i> Telemedicina
+        </a>
+        <a href="#" onclick="showSection('sobre')" class="nav-link flex items-center gap-3 px-6 py-4 hover:bg-blue-800 dark:hover:bg-gray-800 rounded-2xl">
+          <i class="fas fa-user-md w-5"></i> Dr. Ana Silva
+        </a>
+      </nav>
+
+
+      <div class="p-6 border-t border-blue-800 dark:border-gray-700">
+        <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-3 bg-blue-800 hover:bg-blue-700 dark:bg-gray-800 py-3 rounded-2xl transition">
+          <i id="theme-icon" class="fas fa-moon"></i>
+          <span id="theme-text">Modo Escuro</span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 overflow-auto">
+      <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-5 flex justify-between items-center">
+        <h2 id="page-title" class="text-3xl font-semibold">Dashboard</h2>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <p id="user-name" class="font-semibold"></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Cardiologista</p>
+          </div>
+          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-2xl text-white flex items-center gap-2 transition">
+            <i class="fas fa-sign-out-alt"></i> Sair
+          </button>
+        </div>
+      </header>
+
+
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="section active p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow card-hover">
+            <p class="text-gray-500 dark:text-gray-400">Pacientes Hoje</p>
+            <p class="text-5xl font-bold text-blue-600 mt-2">47</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow card-hover">
+            <p class="text-gray-500 dark:text-gray-400">Consultas Agendadas</p>
+            <p class="text-5xl font-bold text-green-600 mt-2">23</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow card-hover">
+            <p class="text-gray-500 dark:text-gray-400">Leitos Ocupados</p>
+            <p class="text-5xl font-bold text-orange-600 mt-2">68/92</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow card-hover">
+            <p class="text-gray-500 dark:text-gray-400">Teleconsultas</p>
+            <p class="text-5xl font-bold text-purple-600 mt-2">12</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- PACIENTES -->
+      <div id="pacientes" class="section p-8">
+        <h3 class="text-2xl font-semibold mb-6">Cadastro de Pacientes</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow p-8 max-w-2xl mb-8">
+          <form onsubmit="cadastrarPaciente(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2 font-medium">Nome Completo</label>
+              <input type="text" id="nome" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700" required>
+            </div>
+            <div>
+              <label class="block mb-2 font-medium">CPF</label>
+              <input type="text" id="cpf" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700" required>
+            </div>
+            <div>
+              <label class="block mb-2 font-medium">Data de Nascimento</label>
+              <input type="date" id="nascimento" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700" required>
+            </div>
+            <div>
+              <label class="block mb-2 font-medium">Telefone</label>
+              <input type="tel" id="telefone" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700" required>
+            </div>
+            <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-semibold text-lg">
+              Cadastrar Paciente
+            </button>
+          </form>
+        </div>
+
+
+        <h3 class="text-xl font-semibold mb-4">Pacientes Cadastrados</h3>
+        <div id="lista-pacientes" class="bg-white dark:bg-gray-800 rounded-3xl shadow p-6 min-h-[300px]">
+          <p class="text-gray-500 dark:text-gray-400 text-center py-12">Nenhum paciente cadastrado ainda.</p>
+        </div>
+      </div>
+
+
+      <!-- AGENDAMENTOS -->
+      <div id="agendamentos" class="section p-8">
+        <h3 class="text-2xl font-semibold mb-6">Agendar Consulta</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow p-8 max-w-2xl">
+          <div class="space-y-6">
+            <div>
+              <label class="block mb-2 font-medium">Paciente</label>
+              <input type="text" id="ag-paciente" placeholder="Nome do paciente" 
+                     class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700">
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <label class="block mb-2 font-medium">Data</label>
+                <input type="date" id="ag-data" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700">
+              </div>
+              <div>
+                <label class="block mb-2 font-medium">Horário</label>
+                <input type="time" id="ag-horario" class="form-input w-full px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-2xl dark:bg-gray-700">
+              </div>
+            </div>
+            <button onclick="agendarConsulta()" class="w-full bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl font-semibold text-lg">
+              Confirmar Agendamento
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- PRONTUÁRIOS -->
+      <div id="prontuarios" class="section p-8">
+        <h3 class="text-2xl font-semibold mb-6">Prontuários Médicos</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow p-8">
+          <p class="font-medium text-lg">João Silva • CPF 123.456.789-00</p>
+          <div class="mt-6 space-y-6">
+            <div class="border-l-4 border-blue-500 pl-6 py-2">
+              <p class="font-medium">15/05/2025 - Consulta Cardiologia</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Pressão: 130/85 mmHg | Diagnóstico: Hipertensão controlada</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- TELEMEDICINA -->
+      <div id="telemedicina" class="section p-8">
+        <h3 class="text-2xl font-semibold mb-6">Telemedicina</h3>
+        <div class="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl p-16 text-center">
+          <i class="fas fa-video text-8xl mb-6"></i>
+          <h4 class="text-4xl font-bold">Sala de Teleconsulta</h4>
+          <p class="mt-4 text-xl">Paciente: Maria Oliveira</p>
+          <button onclick="iniciarTeleconsulta()" class="mt-10 bg-white text-purple-700 px-12 py-5 rounded-3xl font-bold text-xl hover:bg-gray-100 transition">
+            Entrar na Sala Virtual
+          </button>
+        </div>
+      </div>
+
+
+      <!-- SOBRE DR. ANA SILVA -->
+      <div id="sobre" class="section p-8">
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden">
+          <div class="h-80 bg-gradient-to-r from-blue-600 to-indigo-600 relative">
+            <img src="ana-silva.jpg" 
+                 alt="Dr. Ana Silva" 
+                 class="w-64 h-64 rounded-3xl border-8 border-white shadow-2xl absolute -bottom-32 left-12 object-cover">
+          </div>
+          
+          <div class="pt-40 pb-12 px-12">
+            <h2 class="text-4xl font-bold mb-2">Dr. Ana Carolina Silva</h2>
+            <p class="text-xl text-blue-600 dark:text-blue-400 font-medium">Cardiologista • CRM 45.678-SP</p>
+            
+            <div class="mt-8 prose dark:prose-invert max-w-none text-lg leading-relaxed">
+              <p>
+                Médica cardiologista com mais de 12 anos de experiência, formada pela Universidade de São Paulo (USP) 
+                e com especialização em Cardiologia Intervencionista pelo Hospital Israelita Albert Einstein.
+              </p>
+              <p class="mt-4">
+                Apaixonada por tecnologia e humanização no atendimento, Dr. Ana é pioneira na implementação de 
+                telemedicina no hospital VidaPlus. Sua abordagem combina excelência técnica com um cuidado 
+                extremamente humanizado, sempre colocando o paciente no centro do tratamento.
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                <div class="text-center">
+                  <p class="font-semibold text-3xl text-blue-600">2.500+</p>
+                  <p class="text-sm text-gray-500">Procedimentos realizados</p>
+                </div>
+                <div class="text-center">
+                  <p class="font-semibold text-3xl text-blue-600">98%</p>
+                  <p class="text-sm text-gray-500">Satisfação dos pacientes</p>
+                </div>
+                <div class="text-center">
+                  <p class="font-semibold text-3xl text-blue-600">12</p>
+                  <p class="text-sm text-gray-500">Anos de experiência</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    let currentUser = null;
+    let pacientes = [];
+
+
+    function login(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value;
+      if (user) {
+        currentUser = { name: "Dr. Ana Silva" };
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-system').classList.remove('hidden');
+        document.getElementById('user-name').textContent = currentUser.name;
+        showSection('dashboard');
+      } else {
+        alert("Por favor, preencha os dados de login.");
+      }
+    }
+
+
+    function register(e) {
+      e.preventDefault();
+      alert("✅ Conta criada com sucesso!");
+      showLogin();
+    }
+
+
+    function showLogin() {
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('register-form').classList.add('hidden');
+    }
+
+
+    function showRegister() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.remove('hidden');
+    }
+
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      if (isDark) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        text.textContent = "Modo Claro";
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        text.textContent = "Modo Escuro";
+      }
+    }
+
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+
+
+      const titles = {
+        dashboard: "Dashboard",
+        pacientes: "Pacientes",
+        agendamentos: "Agendamentos",
+        prontuarios: "Prontuários",
+        telemedicina: "Telemedicina",
+        sobre: "Dr. Ana Silva"
+      };
+      document.getElementById('page-title').textContent = titles[sectionId] || "SGHSS";
+    }
+
+
+    function cadastrarPaciente(e) {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
+      const cpf = document.getElementById('cpf').value;
+
+
+      if (nome && cpf) {
+        pacientes.push({ nome, cpf });
+        alert("✅ Paciente cadastrado com sucesso!");
+        atualizarListaPacientes();
+        e.target.reset();
+      }
+    }
+
+
+    function atualizarListaPacientes() {
+      const container = document.getElementById('lista-pacientes');
+      if (pacientes.length === 0) {
+        container.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center py-12">Nenhum paciente cadastrado ainda.</p>`;
+        return;
+      }
+
+
+      let html = `<div class="space-y-3">`;
+      pacientes.forEach(p => {
+        html += `
+          <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl">
+            <div>
+              <p class="font-medium">${p.nome}</p>
+              <p class="text-sm text-gray-500">${p.cpf}</p>
+            </div>
+            <i class="fas fa-check-circle text-green-500"></i>
+          </div>`;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+
+    function agendarConsulta() {
+      const paciente = document.getElementById('ag-paciente').value || "Não informado";
+      let data = document.getElementById('ag-data').value;
+      let horario = document.getElementById('ag-horario').value;
+
+
+      // Formatação da data (dd/mm/yyyy)
+      if (data) {
+        const [ano, mes, dia] = data.split('-');
+        data = `${dia}/${mes}/${ano}`;
+      } else {
+        data = "15/05/2025";
+      }
+
+
+      if (!horario) horario = "14:30";
+
+
+      alert(`✅ Consulta agendada com sucesso!\n\nPaciente: ${paciente}\nData: ${data}\nHorário: ${horario}`);
+    }
+
+
+    function iniciarTeleconsulta() {
+      alert("🔴 Iniciando Teleconsulta...\n\n(Simulação de videochamada)");
+    }
+
+
+    function logout() {
+      if (confirm("Deseja realmente sair do sistema?")) {
+        location.reload();
+      }
+    }
+
+
+    window.onload = () => showLogin();
+  </script>
+</body>
+</html>
