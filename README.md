@@ -1,6 +1,17 @@
-# sghss-vidaplus
+# SGHSS - VidaPlus
 
-acessar projeto: https://carritooliveira.github.io/sghss-vidaplus/#
+🌐 **Acessar o projeto online:** [Ver Site](https://carritooliveira.github.io/sghss-vidaplus/)
 
-Interface administrativa para gestão hospitalar desenvolvida com HTML, CSS e JavaScript,
-contendo autenticação de usuários, dashboard e gerenciamento de pacientes.
+**Interface administrativa para gestão hospitalar** desenvolvida como Single Page Application (SPA) usando **HTML, Tailwind CSS e JavaScript puro**.
+
+### Funcionalidades principais:
+- Sistema de login e registro
+- Dashboard interativo
+- Cadastro e listagem de pacientes
+- Agendamento de consultas
+- Prontuários médicos
+- Telemedicina (simulação)
+- Modo escuro
+- Design moderno e responsivo
+
+**Tecnologias:** HTML5, Tailwind CSS, JavaScript (Vanilla)
