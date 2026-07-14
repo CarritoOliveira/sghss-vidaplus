@@ -1,6 +1,6 @@
 # SGHSS - VidaPlus
 
-🌐 **Acessar o projeto online:** [Ver Site](https://carritooliveira.github.io/sghss-vidaplus/) (abre em nova aba)
+🌐 **Acessar o projeto online:** [Ver Site](https://carritooliveira.github.io/sghss-vidaplus/) 
 
 **Interface administrativa para gestão hospitalar** desenvolvida como Single Page Application (SPA) usando **HTML, Tailwind CSS e JavaScript puro**.
 
